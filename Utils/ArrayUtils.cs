@@ -208,7 +208,6 @@ namespace BigMath.Utils
 		///     Converts array of bytes to hexadecimal string.
 		/// </summary>
 		/// <param name="bytes">Bytes.</param>
-		/// <param name="caps">Capitalize chars.</param>
 		/// <returns>Hexadecimal string representation of the bytes array.</returns>
 		public static string ToHexString (this byte[] bytes)
 			{
