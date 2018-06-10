@@ -2022,13 +2022,12 @@ namespace BigMath
 			if (_sign == 0)
 				return value.Abs ();
 
-			BigInteger r;
 			BigInteger u = this;
 			BigInteger v = value;
 
 			while (v._sign != 0)
 				{
-				r = u.Mod (v);
+				BigInteger r = u.Mod (v);
 				u = v;
 				v = r;
 				}
@@ -2422,7 +2421,6 @@ namespace BigMath
 
 			int[] zVal = null;
 			int[] yAccum = null;
-			int[] yVal;
 
 			// Montgomery exponentiation is only possible if the modulus is odd,
 			// but AFAIK, this is always the case for crypto algo's
@@ -2473,7 +2471,7 @@ namespace BigMath
 				yAccum = new int[m._magnitude.Length * 2];
 				}
 
-			yVal = new int[m._magnitude.Length];
+			int[] yVal = new int[m._magnitude.Length];
 
 			//
 			// from LSW to MSW
@@ -2680,11 +2678,9 @@ namespace BigMath
 
 			while (v3 > 0)
 				{
-				long q, tn;
+				long q = u3 / v3;
 
-				q = u3 / v3;
-
-				tn = u1 - (v1 * q);
+				long tn = u1 - (v1 * q);
 				u1 = v1;
 				v1 = tn;
 
@@ -3260,12 +3256,11 @@ namespace BigMath
 
 			int iT = x.Length;
 			int iV = y.Length;
-			long m;
 			int borrow = 0;
 
 			do
 				{
-				m = (x[--iT] & Mask) - (y[--iV] & Mask) + borrow;
+				long m = (x[--iT] & Mask) - (y[--iV] & Mask) + borrow;
 				x[iT] = (int)m;
 
 				//				borrow = (m < 0) ? -1 : 0;
@@ -3779,8 +3774,9 @@ namespace BigMath
 		/// <returns>A signed integer that indicates the relative values of left and right, as shown in the following table.</returns>
 		public static int Compare (BigInteger left, object right)
 			{
-			if (right is BigInteger)
-				return Compare (left, (BigInteger)right);
+			var bigInteger = right as BigInteger;
+			if (bigInteger != null)
+				return Compare (left, bigInteger);
 
 			// NOTE: this could be optimized type per type
 			if (right is bool)
