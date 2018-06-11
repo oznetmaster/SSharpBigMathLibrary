@@ -9,6 +9,6 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("BigMath")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyVersion ("1.0.0.0")]
+[assembly: AssemblyVersion ("1.0.1.0")]
 [assembly: AssemblyCompany ("Nivloc Enterprises Ltd")]
 [assembly: AssemblyCopyright ("Copyright © 2018 Nivloc Enterprises Ltd")]

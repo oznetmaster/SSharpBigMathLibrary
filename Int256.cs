@@ -644,8 +644,12 @@ namespace BigMath
 		public static Int256 Parse (string value, NumberStyles style, IFormatProvider provider)
 			{
 			Int256 result;
-			if (!TryParse (value, style, provider, out result))
+
+			if (value == null)
 				throw new ArgumentException (null, "value");
+
+			if (!TryParse (value, style, provider, out result))
+				throw new FormatException ();
 
 			return result;
 			}
@@ -687,29 +691,41 @@ namespace BigMath
 		/// <returns>true if the value parameter was converted successfully; otherwise, false.</returns>
 		public static bool TryParse (string value, NumberStyles style, IFormatProvider provider, out Int256 result)
 			{
+			var nfi = provider == null ? NumberFormatInfo.CurrentInfo : NumberFormatInfo.GetInstance (provider);
+
 			result = Zero;
-			if (string.IsNullOrEmpty (value))
+			if (StringEx.IsNullOrWhiteSpace (value))
 				return false;
+
+			if (style.HasFlag (NumberStyles.AllowLeadingWhite))
+				value = value.TrimStart ();
+
+			if (style.HasFlag (NumberStyles.AllowTrailingWhite))
+				value = value.TrimEnd ();
 
 			if (value.StartsWith ("x", StringComparison.OrdinalIgnoreCase))
 				{
+				if (style.HasFlag (NumberStyles.AllowHexSpecifier))
+					throw new FormatException ("x not allowed with AllowHexSpecifier");
+
 				style |= NumberStyles.AllowHexSpecifier;
 				value = value.Substring (1);
 				}
 			else if (value.StartsWith ("0x", StringComparison.OrdinalIgnoreCase))
 				{
+				if (style.HasFlag (NumberStyles.AllowHexSpecifier))
+					throw new FormatException ("x not allowed with AllowHexSpecifier");
+
 				style |= NumberStyles.AllowHexSpecifier;
 				value = value.Substring (2);
 				}
 
-			if ((style & NumberStyles.AllowHexSpecifier) == NumberStyles.AllowHexSpecifier)
-				return TryParseHex (value, out result);
-
-			return TryParseNum (value, out result);
+			return style.HasFlag (NumberStyles.AllowHexSpecifier) ? TryParseHex (value, out result) : TryParseNum (value, style, nfi, out result);
 			}
 
 		private static bool TryParseHex (string value, out Int256 result)
 			{
+			value = value.TrimStart ('0');
 			if (value.Length > 64)
 				throw new OverflowException ();
 
@@ -741,20 +757,82 @@ namespace BigMath
 			return true;
 			}
 
-		private static bool TryParseNum (string value, out Int256 result)
+		private static bool TryParseNum (string value, NumberStyles style, NumberFormatInfo nfi, out Int256 result)
 			{
 			result = Zero;
-			foreach (char ch in value)
+			bool isNegative = false;
+			bool hasValue = false;
+
+			if (style.HasFlag (NumberStyles.AllowLeadingSign))
 				{
-				byte b;
+				if (nfi != null)
+					{
+					if (value.StartsWith (nfi.PositiveSign))
+						value = value.Substring (nfi.PositiveSign.Length);
+					else if (value.StartsWith (nfi.NegativeSign))
+						{
+						value = value.Substring (nfi.NegativeSign.Length);
+						isNegative = true;
+						}
+					}
+				else if (value[0] == '+')
+					value = value.Substring (1);
+				else if (value[0] == '-')
+					{
+					value = value.Substring (1);
+					isNegative = true;
+					}
+				}
+
+			for (int ix = 0; ix < value.Length; ++ix)
+				{
+				char ch = value[ix];
+
 				if ((ch >= '0') && (ch <= '9'))
-					b = (byte)(ch - '0');
+					{
+					var b = (byte)(ch - '0');
+					hasValue = true;
+
+					result = 10 * result;
+					result += b;
+
+					if (result.Sign < 0)
+						throw new OverflowException ();
+					}
+				else if (style.HasFlag (NumberStyles.AllowTrailingSign))
+					{
+					if (nfi != null)
+						{
+						if (value.Substring (ix) == nfi.PositiveSign)
+							break;
+
+						if (value.Substring (ix) == nfi.NegativeSign)
+							{
+							isNegative = true;
+							break;
+							}
+
+						return false;
+						}
+
+					if (ix == value.Length - 1 && (ch == '+' || ch == '-'))
+						{
+						isNegative = ch == '-';
+						break;
+						}
+
+					return false;
+					}
 				else
 					return false;
-
-				result = 10 * result;
-				result += b;
 				}
+
+			if (!hasValue)
+				return false;
+
+			if (isNegative)
+				result.Negate ();
+
 			return true;
 			}
 
