@@ -269,6 +269,23 @@ namespace BigMath
 			_d = values[0];
 			}
 
+		public Int256 (UInt128 value)
+			{
+			ulong[] values = value.ToUIn64Array ();
+			_a = _b = 0;
+			_c = values[1];
+			_d = values[0];
+			}
+
+		public Int256 (UInt256 value)
+			{
+			ulong[] values = value.ToUIn64Array ();
+			_a = values[3];
+			_b = values[2];
+			_c = values[1];
+			_d = values[0];
+			}
+
 		public Int256 (ulong a, ulong b, ulong c, ulong d)
 			{
 			_a = a;
@@ -588,6 +605,18 @@ namespace BigMath
 			if (conversionType == typeof(Int128))
 				{
 				value = (Int128)this;
+				return true;
+				}
+
+			if (conversionType == typeof (UInt128))
+				{
+				value = (UInt128)this;
+				return true;
+				}
+
+			if (conversionType == typeof (UInt256))
+				{
+				value = (UInt256)this;
 				return true;
 				}
 
@@ -1178,13 +1207,13 @@ namespace BigMath
 			}
 
 		/// <summary>
-		///     Performs an implicit conversion from <see cref="System.Boolean" /> to <see cref="Int256" />.
+		///     Performs an explicit conversion from <see cref="System.Boolean" /> to <see cref="Int256" />.
 		/// </summary>
 		/// <param name="value">if set to <c>true</c> [value].</param>
 		/// <returns>
 		///     The result of the conversion.
 		/// </returns>
-		public static implicit operator Int256 (bool value)
+		public static explicit operator Int256 (bool value)
 			{
 			return new Int256 (value);
 			}
@@ -1329,6 +1358,42 @@ namespace BigMath
 		///     The result of the conversion.
 		/// </returns>
 		public static implicit operator Int256 (ulong value)
+			{
+			return new Int256 (value);
+			}
+
+		/// <summary>
+		///     Performs an implicit conversion from <see cref="Int128" /> to <see cref="Int256" />.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		///     The result of the conversion.
+		/// </returns>
+		public static implicit operator Int256 (Int128 value)
+			{
+			return new Int256 (value);
+			}
+
+		/// <summary>
+		///     Performs an implicit conversion from <see cref="UInt128" /> to <see cref="Int256" />.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		///     The result of the conversion.
+		/// </returns>
+		public static implicit operator Int256 (UInt128 value)
+			{
+			return new Int256 (value);
+			}
+
+		/// <summary>
+		///     Performs an explicit conversion from <see cref="UInt256" /> to <see cref="Int256" />.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		///     The result of the conversion.
+		/// </returns>
+		public static explicit operator Int256 (UInt256 value)
 			{
 			return new Int256 (value);
 			}

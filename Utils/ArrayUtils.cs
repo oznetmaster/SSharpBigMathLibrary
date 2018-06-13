@@ -399,7 +399,7 @@ namespace BigMath.Utils
 			int offset = 0;
 			if (trimZeros && strLength > min)
 				{
-				for (int i = 0; i < chars.Length; i++)
+				for (int i = 0; i < strLength - min; i++)
 					{
 					char c = chars[i];
 					if (c != '0' && c != ' ')

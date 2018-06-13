@@ -1196,6 +1196,153 @@ namespace BigMath.Utils
 
 		#endregion
 
+		#region UInt128
+
+#if NETCF
+		/// <summary>
+		///     Converts an <see cref="UInt128" /> value to an array of bytes.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="buffer">An array of bytes.</param>
+		public static void ToBytes (this UInt128 value, byte[] buffer)
+			{
+			ToBytes (value, buffer, 0, null);
+			}
+		/// <summary>
+		///     Converts an <see cref="UInt128" /> value to an array of bytes.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="buffer">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="buffer" />.</param>
+		public static void ToBytes (this UInt128 value, byte[] buffer, int offset)
+			{
+			ToBytes (value, buffer, offset, null);
+			}
+		/// <summary>
+		///     Converts an <see cref="UInt128" /> value to an array of bytes.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="buffer">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="buffer" />.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		public static void ToBytes (this UInt128 value, byte[] buffer, int offset, bool? asLittleEndian)
+#else
+		/// <summary>
+		///     Converts an <see cref="UInt128" /> value to an array of bytes.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="buffer">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="buffer" />.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		public static void ToBytes (this UInt128 value, byte[] buffer, int offset = 0, bool? asLittleEndian = null)
+#endif
+			{
+			bool ale = GetIsLittleEndian (asLittleEndian);
+			value.Low.ToBytes (buffer, ale ? offset : offset + 8, ale);
+			value.High.ToBytes (buffer, ale ? offset + 8 : offset, ale);
+			}
+
+#if NETCF
+		/// <summary>
+		///     Converts an <see cref="UInt128" /> value to a byte array.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <returns>Array of bytes.</returns>
+		public static byte[] ToBytes (this UInt128 value)
+			{
+			return ToBytes (value, null, false);
+			}
+		/// <summary>
+		///     Converts an <see cref="UInt128" /> value to a byte array.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		/// <returns>Array of bytes.</returns>
+		public static byte[] ToBytes (this UInt128 value, bool? asLittleEndian)
+			{
+			return ToBytes (value, asLittleEndian, false);
+			}
+		/// <summary>
+		///     Converts an <see cref="UInt128" /> value to a byte array.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		/// <param name="trimZeros">Trim zero bytes from left or right, depending on endian.</param>
+		/// <returns>Array of bytes.</returns>
+		public static byte[] ToBytes (this UInt128 value, bool? asLittleEndian, bool trimZeros)
+#else
+		/// <summary>
+		///     Converts an <see cref="UInt128" /> value to a byte array.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		/// <param name="trimZeros">Trim zero bytes from left or right, depending on endian.</param>
+		/// <returns>Array of bytes.</returns>
+		public static byte[] ToBytes (this UInt128 value, bool? asLittleEndian = null, bool trimZeros = false)
+#endif
+			{
+			var buffer = new byte[16];
+			value.ToBytes (buffer, 0, asLittleEndian);
+
+			if (trimZeros)
+				buffer = buffer.TrimZeros (asLittleEndian);
+
+			return buffer;
+			}
+
+#if NETCF
+		/// <summary>
+		///     Converts array of bytes to <see cref="UInt128" />.
+		/// </summary>
+		/// <param name="bytes">An array of bytes.</param>
+		/// <returns><see cref="Int128" /> value.</returns>
+		public static UInt128 ToUInt128 (this byte[] bytes)
+			{
+			return ToUInt128 (bytes, 0, null);
+			}
+		/// <summary>
+		///     Converts array of bytes to <see cref="UInt128" />.
+		/// </summary>
+		/// <param name="bytes">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="bytes" />.</param>
+		/// <returns><see cref="UInt128" /> value.</returns>
+		public static UInt128 ToUInt128 (this byte[] bytes, int offset)
+			{
+			return ToUInt128 (bytes, offset, null);
+			}
+		/// <summary>
+		///     Converts array of bytes to <see cref="UInt128" />.
+		/// </summary>
+		/// <param name="bytes">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="bytes" />.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		/// <returns><see cref="UInt128" /> value.</returns>
+		public static UInt128 ToUInt128 (this byte[] bytes, int offset, bool? asLittleEndian)
+#else
+		/// <summary>
+		///     Converts array of bytes to <see cref="UInt128" />.
+		/// </summary>
+		/// <param name="bytes">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="bytes" />.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		/// <returns><see cref="UInt128" /> value.</returns>
+		public static UInt128 ToUInt128 (this byte[] bytes, int offset = 0, bool? asLittleEndian = null)
+#endif
+			{
+			if (bytes == null)
+				throw new ArgumentNullException ("bytes");
+			if (bytes.Length == 0)
+				return 0;
+			if (bytes.Length <= offset)
+				throw new InvalidOperationException ("Array length must be greater than offset.");
+			bool ale = GetIsLittleEndian (asLittleEndian);
+			EnsureLength (ref bytes, 16, offset, ale);
+
+			return new UInt128 (bytes.ToUInt64 (ale ? offset + 8 : offset, ale), bytes.ToUInt64 (ale ? offset : offset + 8, ale));
+			}
+
+		#endregion
+
 		#region Int256
 
 #if NETCF
@@ -1347,6 +1494,161 @@ namespace BigMath.Utils
 			ulong d = bytes.ToUInt64 (ale ? offset : offset + 24, ale);
 
 			return new Int256 (a, b, c, d);
+			}
+
+		#endregion
+
+		#region UInt256
+
+#if NETCF
+		/// <summary>
+		///     Converts an <see cref="UInt256" /> value to an array of bytes.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="buffer">An array of bytes.</param>
+		public static void ToBytes (this UInt256 value, byte[] buffer)
+			{
+			ToBytes (value, buffer, 0, null);
+			}
+		/// <summary>
+		///     Converts an <see cref="UInt256" /> value to an array of bytes.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="buffer">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="buffer" />.</param>
+		public static void ToBytes (this UInt256 value, byte[] buffer, int offset)
+			{
+			ToBytes (value, buffer, offset, null);
+			}
+		/// <summary>
+		///     Converts an <see cref="UInt256" /> value to an array of bytes.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="buffer">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="buffer" />.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		public static void ToBytes (this UInt256 value, byte[] buffer, int offset, bool? asLittleEndian)
+#else
+		/// <summary>
+		///     Converts an <see cref="UInt256" /> value to an array of bytes.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="buffer">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="buffer" />.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		public static void ToBytes (this UInt256 value, byte[] buffer, int offset = 0, bool? asLittleEndian = null)
+#endif
+			{
+			bool ale = GetIsLittleEndian (asLittleEndian);
+
+			value.D.ToBytes (buffer, ale ? offset : offset + 24, ale);
+			value.C.ToBytes (buffer, ale ? offset + 8 : offset + 16, ale);
+			value.B.ToBytes (buffer, ale ? offset + 16 : offset + 8, ale);
+			value.A.ToBytes (buffer, ale ? offset + 24 : offset, ale);
+			}
+
+#if NETCF
+		/// <summary>
+		///     Converts an <see cref="UInt256" /> value to a byte array.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <returns>Array of bytes.</returns>
+		public static byte[] ToBytes (this UInt256 value)
+			{
+			return ToBytes (value, null, false);
+			}
+		/// <summary>
+		///     Converts an <see cref="UInt256" /> value to a byte array.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		/// <returns>Array of bytes.</returns>
+		public static byte[] ToBytes (this UInt256 value, bool? asLittleEndian)
+			{
+			return ToBytes (value, asLittleEndian, false);
+			}
+		/// <summary>
+		///     Converts an <see cref="UInt256" /> value to a byte array.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		/// <param name="trimZeros">Trim zero bytes from left or right, depending on endian.</param>
+		/// <returns>Array of bytes.</returns>
+		public static byte[] ToBytes (this UInt256 value, bool? asLittleEndian, bool trimZeros)
+#else
+		/// <summary>
+		///     Converts an <see cref="UInt256" /> value to a byte array.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		/// <param name="trimZeros">Trim zero bytes from left or right, depending on endian.</param>
+		/// <returns>Array of bytes.</returns>
+		public static byte[] ToBytes (this UInt256 value, bool? asLittleEndian = null, bool trimZeros = false)
+#endif
+			{
+			var buffer = new byte[32];
+			value.ToBytes (buffer, 0, asLittleEndian);
+
+			if (trimZeros)
+				buffer = buffer.TrimZeros (asLittleEndian);
+
+			return buffer;
+			}
+
+#if NETCF
+		/// <summary>
+		///     Converts array of bytes to <see cref="UInt256" />.
+		/// </summary>
+		/// <param name="bytes">An array of bytes.</param>
+		/// <returns><see cref="UInt256" /> value.</returns>
+		public static UInt256 ToUInt256 (this byte[] bytes)
+			{
+			return ToUInt256 (bytes, 0, null);
+			}
+		/// <summary>
+		///     Converts array of bytes to <see cref="UInt256" />.
+		/// </summary>
+		/// <param name="bytes">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="bytes" />.</param>
+		/// <returns><see cref="UInt256" /> value.</returns>
+		public static UInt256 ToUInt256 (this byte[] bytes, int offset)
+			{
+			return ToUInt256 (bytes, offset, null);
+			}
+		/// <summary>
+		///     Converts array of bytes to <see cref="UInt256" />.
+		/// </summary>
+		/// <param name="bytes">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="bytes" />.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		/// <returns><see cref="UInt256" /> value.</returns>
+		public static UInt256 ToUInt256 (this byte[] bytes, int offset, bool? asLittleEndian)
+#else
+		/// <summary>
+		///     Converts array of bytes to <see cref="UInt256" />.
+		/// </summary>
+		/// <param name="bytes">An array of bytes.</param>
+		/// <param name="offset">The starting position within <paramref name="bytes" />.</param>
+		/// <param name="asLittleEndian">Convert from little endian.</param>
+		/// <returns><see cref="UInt256" /> value.</returns>
+		public static UInt256 ToUInt256 (this byte[] bytes, int offset = 0, bool? asLittleEndian = null)
+#endif
+			{
+			if (bytes == null)
+				throw new ArgumentNullException ("bytes");
+			if (bytes.Length == 0)
+				return 0;
+			if (bytes.Length <= offset)
+				throw new InvalidOperationException ("Array length must be greater than offset.");
+			bool ale = GetIsLittleEndian (asLittleEndian);
+			EnsureLength (ref bytes, 32, offset, ale);
+
+			ulong a = bytes.ToUInt64 (ale ? offset + 24 : offset, ale);
+			ulong b = bytes.ToUInt64 (ale ? offset + 16 : offset + 8, ale);
+			ulong c = bytes.ToUInt64 (ale ? offset + 8 : offset + 16, ale);
+			ulong d = bytes.ToUInt64 (ale ? offset : offset + 24, ale);
+
+			return new UInt256 (a, b, c, d);
 			}
 
 		#endregion
