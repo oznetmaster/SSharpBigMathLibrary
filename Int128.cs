@@ -1775,10 +1775,10 @@ namespace BigMath
 		/// <returns>The result of the operator.</returns>
 		public static Int128 operator | (Int128 left, Int128 right)
 			{
-			if (left == 0)
+			if (left.Sign == 0)
 				return right;
 
-			if (right == 0)
+			if (right.Sign == 0)
 				return left;
 
 			Int128 result = left;
@@ -1795,12 +1795,32 @@ namespace BigMath
 		/// <returns>The result of the operator.</returns>
 		public static Int128 operator & (Int128 left, Int128 right)
 			{
-			if (left == 0 || right == 0)
+			if (left.Sign == 0 || right.Sign == 0)
 				return Zero;
 
 			Int128 result = left;
 			result._hi &= right._hi;
 			result._lo &= right._lo;
+			return result;
+			}
+
+		/// <summary>
+		///     Implements the operator ^.
+		/// </summary>
+		/// <param name="left">The left.</param>
+		/// <param name="right">The right.</param>
+		/// <returns>The result of the operator.</returns>
+		public static Int128 operator ^ (Int128 left, Int128 right)
+			{
+			if (left.Sign == 0)
+				return right;
+
+			if (right.Sign == 0)
+				return left;
+
+			Int128 result = left;
+			result._hi ^= right._hi;
+			result._lo ^= right._lo;
 			return result;
 			}
 

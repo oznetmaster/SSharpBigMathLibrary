@@ -1481,10 +1481,10 @@ namespace BigMath
 		/// <returns>The result of the operator.</returns>
 		public static BigInteger operator | (BigInteger left, BigInteger right)
 			{
-			if (left == 0)
+			if (left.Sign == 0)
 				return right;
 
-			if (right == 0)
+			if (right.Sign == 0)
 				return left;
 
 			return left.Or (right);
@@ -1498,12 +1498,28 @@ namespace BigMath
 		/// <returns>The result of the operator.</returns>
 		public static BigInteger operator & (BigInteger left, BigInteger right)
 			{
-			if (left == 0 || right == 0)
+			if (left.Sign == 0 || right.Sign == 0)
 				return Zero;
 
 			return left.And (right);
 			}
 
+		/// <summary>
+		///     Implements the operator ^.
+		/// </summary>
+		/// <param name="left">The left.</param>
+		/// <param name="right">The right.</param>
+		/// <returns>The result of the operator.</returns>
+		public static BigInteger operator ^ (BigInteger left, BigInteger right)
+			{
+			if (left.Sign == 0)
+				return right;
+
+			if (right.Sign == 0)
+				return left;
+
+			return left.Xor (right);
+			}
 		/// <summary>
 		///     Implements the operator ~.
 		/// </summary>

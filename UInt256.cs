@@ -1888,6 +1888,27 @@ namespace BigMath
 			}
 
 		/// <summary>
+		///     Implements the operator ^.
+		/// </summary>
+		/// <param name="left">The left.</param>
+		/// <param name="right">The right.</param>
+		/// <returns>The result of the operator.</returns>
+		public static UInt256 operator ^ (UInt256 left, UInt256 right)
+			{
+			if (left.Sign == 0)
+				return right;
+
+			if (right.Sign == 0)
+				return left;
+
+			left._a ^= right._a;
+			left._b ^= right._b;
+			left._c ^= right._c;
+			left._d ^= right._d;
+			return left;
+			}
+
+		/// <summary>
 		///     Implements the operator ~.
 		/// </summary>
 		/// <param name="value">The value.</param>

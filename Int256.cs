@@ -1847,10 +1847,10 @@ namespace BigMath
 		/// <returns>The result of the operator.</returns>
 		public static Int256 operator | (Int256 left, Int256 right)
 			{
-			if (left == 0)
+			if (left.Sign == 0)
 				return right;
 
-			if (right == 0)
+			if (right.Sign == 0)
 				return left;
 
 			left._a |= right._a;
@@ -1868,13 +1868,34 @@ namespace BigMath
 		/// <returns>The result of the operator.</returns>
 		public static Int256 operator & (Int256 left, Int256 right)
 			{
-			if (left == 0 || right == 0)
+			if (left.Sign == 0 || right.Sign == 0)
 				return Zero;
 
 			left._a &= right._a;
 			left._b &= right._b;
 			left._c &= right._c;
 			left._d &= right._d;
+			return left;
+			}
+
+		/// <summary>
+		///     Implements the operator ^.
+		/// </summary>
+		/// <param name="left">The left.</param>
+		/// <param name="right">The right.</param>
+		/// <returns>The result of the operator.</returns>
+		public static Int256 operator ^ (Int256 left, Int256 right)
+			{
+			if (left.Sign == 0)
+				return right;
+
+			if (right.Sign == 0)
+				return left;
+
+			left._a ^= right._a;
+			left._b ^= right._b;
+			left._c ^= right._c;
+			left._d ^= right._d;
 			return left;
 			}
 
