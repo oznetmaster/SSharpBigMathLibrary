@@ -24,7 +24,7 @@ namespace BigMath
 	Pack = 1,
 #endif
 		Size = 16)]
-	public struct UInt128 : IComparable<UInt128>, IComparable, IEquatable<UInt128>, IFormattable
+	public struct UInt128 : IComparable<UInt128>, IComparable, IEquatable<UInt128>, IFormattable, IConvertible
 		{
 #if !NETCF
 		[DebuggerBrowsable (DebuggerBrowsableState.Never)]
@@ -1864,5 +1864,95 @@ namespace BigMath
 			{
 			return value - 1;
 			}
+
+		#region IConvertible Members
+
+		TypeCode IConvertible.GetTypeCode ()
+			{
+			return TypeCode.Object;
+			}
+
+		bool IConvertible.ToBoolean (IFormatProvider provider)
+			{
+			return (bool)this;
+			}
+
+		byte IConvertible.ToByte (IFormatProvider provider)
+			{
+			return (byte)this;
+			}
+
+		char IConvertible.ToChar (IFormatProvider provider)
+			{
+			return (char)this;
+			}
+
+		DateTime IConvertible.ToDateTime (IFormatProvider provider)
+			{
+			throw new InvalidCastException ();
+			}
+
+		decimal IConvertible.ToDecimal (IFormatProvider provider)
+			{
+			return (decimal)this;
+			}
+
+		double IConvertible.ToDouble (IFormatProvider provider)
+			{
+			return (double)this;
+			}
+
+		short IConvertible.ToInt16 (IFormatProvider provider)
+			{
+			return (short)this;
+			}
+
+		int IConvertible.ToInt32 (IFormatProvider provider)
+			{
+			return (int)this;
+			}
+
+		long IConvertible.ToInt64 (IFormatProvider provider)
+			{
+			return (long)this;
+			}
+
+		sbyte IConvertible.ToSByte (IFormatProvider provider)
+			{
+			return (sbyte)this;
+			}
+
+		float IConvertible.ToSingle (IFormatProvider provider)
+			{
+			return (float)this;
+			}
+
+		string IConvertible.ToString (IFormatProvider provider)
+			{
+			return this.ToString (null, provider);
+			}
+
+		object IConvertible.ToType (Type conversionType, IFormatProvider provider)
+			{
+			return ToType (conversionType, provider, true);
+			}
+
+		ushort IConvertible.ToUInt16 (IFormatProvider provider)
+			{
+			return (ushort)this;
+			}
+
+		uint IConvertible.ToUInt32 (IFormatProvider provider)
+			{
+			return (uint)this;
+			}
+
+		ulong IConvertible.ToUInt64 (IFormatProvider provider)
+			{
+			return (ulong)this;
+			}
+
+		#endregion
+
 		}
 	}
