@@ -70,7 +70,7 @@ namespace BigMath
 
 		private static Int128 GetMinValue ()
 			{
-			return -GetMaxValue ();
+			return -GetMaxValue () - 1;
 			}
 
 		private static Int128 GetZero ()

@@ -82,7 +82,7 @@ namespace BigMath
 
 		private static Int256 GetMinValue ()
 			{
-			return -GetMaxValue ();
+			return -GetMaxValue () - 1;
 			}
 
 		private static Int256 GetZero ()
