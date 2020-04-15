@@ -56,11 +56,11 @@
     <Reference Include="mscorlib" />
     <Reference Include="SimplSharpCustomAttributesInterface, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1099c178b3b54c3b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ProgramData\Crestron\SDK\SimplSharpCustomAttributesInterface.dll</HintPath>
+      <HintPath>C:\ProgramData\Crestron\SDK\SimplSharpCustomAttributesInterface.dll</HintPath>
     </Reference>
     <Reference Include="SimplSharpHelperInterface, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1099c178b3b54c3b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ProgramData\Crestron\SDK\SimplSharpHelperInterface.dll</HintPath>
+      <HintPath>C:\ProgramData\Crestron\SDK\SimplSharpHelperInterface.dll</HintPath>
     </Reference>
     <Reference Include="SSCoreMiniDiagnosticsLibrary, Version=1.0.0.17463, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
